@@ -1,4 +1,11 @@
 # music
+ #项目展示地址，
+   http://www.luofanrain.club/music/#/count
+ #项目展示图片
+![image](https://github.com/luofanrain/vue-music/blob/master/demo/index.png)
+![image](https://github.com/luofanrain/vue-music/blob/master/demo/playlist.png)
+![image](https://github.com/luofanrain/vue-music/blob/master/demo/single-sing.png)
+
 
 > A Vue.js project
 
