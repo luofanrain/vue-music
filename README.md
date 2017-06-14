@@ -17,7 +17,7 @@
 			
  #项目展示图片	
  
-                     ##电脑端                     ##手机端                                
+                                        ##电脑端                                   ##手机端                                
                       
         			              
 ![image](https://github.com/luofanrain/vue-music/blob/master/demo/computer-index.png)
