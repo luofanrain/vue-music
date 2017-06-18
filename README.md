@@ -29,5 +29,3 @@
 ![image](https://github.com/luofanrain/vue-music/blob/master/demo/phone-list.png)
 ![image](https://github.com/luofanrain/vue-music/blob/master/demo/computer-detail.png)
 ![image](https://github.com/luofanrain/vue-music/blob/master/demo/phone-detail.png)
-![image](https://github.com/luofanrain/vue-music/blob/master/demo/computer-comment.png)
-![image](https://github.com/luofanrain/vue-music/blob/master/demo/phone-comment.png)
