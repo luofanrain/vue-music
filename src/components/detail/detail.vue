@@ -19,14 +19,14 @@
    			</div>
    			<div class="lyric"><p class="heng"><span class="word">未找到歌词</span></p></div>
    			<div class="speed">
-			<div class="startime">{{changetime(this.currenttime)}}</div>
-   			<div class="speed-item">
-   				<div class="progress">
-					<div class="animation"></div>
-				</div>
-				<div class="anima"></div>
-   			</div>
-   			<div class="endtime" >{{changetime(sing.playtime)}}</div>
+				<div class="startime">{{changetime(this.currenttime)}}</div>
+	   			<div class="speed-item">
+	   				<div class="progress">
+						<div class="animation"></div>
+					</div>
+					<div class="anima"></div>
+	   			</div>
+	   			<div class="endtime" >{{changetime(sing.playtime)}}</div>
    			</div>
    			<div class="singcart">
    				<span class="icon icon-upper" @click="playupper"></span>
@@ -187,7 +187,7 @@ export default {
 				color:#fff
 				font-size:32px
 				text-align:center
-				padding:30px 0
+				padding:50px 0
 			.state
 				text-align:center
 				color:#33ff99
@@ -201,9 +201,8 @@ export default {
 					vertical-align:top
 					font-size:80px
 			.cd
-				position:relative
-				left:25%
-				top:10%
+				margin-left:25%
+				margin-top:10%
 				width:300px
 				height:300px
 				border-radius:50%
@@ -221,9 +220,9 @@ export default {
 				color:#fff
 				font-size:48px
 				text-align:center
-				margin:25% 25% 
 				width:800px
 				height:50px
+				margin:10% 0 10% 25%
 				overflow:hidden
 				.heng
 					width:500px
@@ -238,8 +237,9 @@ export default {
 							to {margin-left:-150%}
 
 			.speed
-				margin:0 30px
+				margin:10% 10px 10% 70px
 				position:relative
+				top:5%
 				.startime
 					position:absolute
 					top:0px
@@ -288,9 +288,11 @@ export default {
 						from {margin-left: 0}
 						to {margin-left: 95%}
 			.singcart
+				position:relative
+				top:9%
+				left:0
 				text-align:center
 				font-size:0
-				padding-top:150px
 				.icon
 					color:#33ff99
 					font-size:100px
