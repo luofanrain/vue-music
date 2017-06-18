@@ -3,7 +3,7 @@
     <v-header></v-header>
     <div class="nav-wrapper">
       <div class="nav-item"   @click="select(0)" :class="{'active':selectactive === 0}"><router-link to="/count">{{this.count}}</router-link></div>
-      <div class="nav-item"   @click="select(1)" :class="{'active':selectactive === 1}"><router-link to="/purpular">{{this.purpular}}</router-link></div>
+      <div class="nav-item"   @click="select(1)" :class="{'active':selectactive === 1}"><router-link to="/comment">{{this.purpular}}</router-link></div>
       <div class="nav-item"   @click="select(2)" :class="{'active':selectactive === 2}"><router-link to="/person">{{this.person}}</router-link></div>
     </div>
     <keep-alive>
@@ -19,7 +19,7 @@ export default {
     return {
       song:null,
       count:"总榜",
-      purpular:"热门",
+      purpular:"评论",
       person:'个人',
       change:[],
       selectactive:0

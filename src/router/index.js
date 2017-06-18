@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import header from '@/components/header/header.vue'
 import count from '@/components/count/count.vue'
-import purpular from '@/components/purpular/purpular.vue'
+import comment from '@/components/comment/comment.vue'
 import person from '@/components/person/person.vue'
 
 Vue.use(Router)
@@ -20,9 +20,9 @@ export default new Router({
       component: count
     },
     {
-      path: '/purpular',
-      name: 'purpular',
-      component: purpular
+      path: '/comment',
+      name: 'comment',
+      component: comment
     },
     {
       path: '/person',
