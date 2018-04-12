@@ -12,7 +12,7 @@ export default new Router({
     {
       path: '/',
       name: 'header',
-      component: header
+      component: count
     },
     {
       path: '/count',

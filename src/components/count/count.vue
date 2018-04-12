@@ -6,8 +6,8 @@
 						<span	class="title">全播放</span>
 					</div>
 					<div	class="tool-nav"	@click="download">
-						<span	class="icon icon-download"></span>
-						<span	class="title">下载</span>
+						<span	class="icon icon-add"></span>
+						<span	class="title">添加</span>
 					</div>
 					<div	class="tool-nav"	@click="selectshow">
 						<span	class="icon icon-qrcode"></span>
@@ -27,12 +27,12 @@
 							<span	v-show="showselect"><input	type="checkbox"	class="select"	name=""	:value="item.id"	></span>
 							<span	class="icon-item	icon-playon"	@click="play(item)"></span>
 							<span	class="icon-item	icon-add_circle"></span>
-							<span	class="icon-item	icon-download"></i></span>
+							<span	class="icon-item	icon-add1"></i></span>
 						</div>
 					</li>
 				</ul>
 				</div>
-			<playsong	:sing="sing"	ref="playsongs"></playsong>
+			<playsong	:sing="sing"	ref="playsongs" v-on:playDetail="playDetail"></playsong>
 			<transition	name="asce">
 				<div	class="listsong"	v-show="showlist">
 					<div	class="title-wrapper">
@@ -64,6 +64,7 @@
 
 <script	type="text/ecmascript-6">
 import	playsong	from	"../playsong/playsong.vue"
+import {getSongList} from "../../common/js/comment.js"
 import	detail	from	"../detail/detail.vue"
 import	BScroll	from	'better-scroll'
 import	$	from	'jquery'
@@ -82,7 +83,8 @@ export	default	{
 			listsong:[],
 			showlist:false,
 			singlist:[],
-			detailshow:false
+			detailshow:false,
+			musicCurrentTime:0
 		}
 	},
 	computed:{
@@ -107,8 +109,18 @@ export	default	{
   		});
 		},
 		showdetail(value){
-			this.sing=value;
-			this.$refs.detailtime.cleartime();
+			if(!this.song){
+			   this.detailshow=!this.detailshow;
+			   return;
+			}
+			if(value.songName==this.sing.songName){
+				this.sing=value;
+				this.sing.currentTime=Math.floor(this.$refs.playsongs.getCurrentTime());	
+			}else{
+				this.sing=value;
+				this.sing.currentTime=0;	
+			}
+			this.$refs.detailtime.cleartime(this.sing.currentTime,this.sing);
 			this.detailshow=!this.detailshow;
 		},
 		clear(){
@@ -131,8 +143,11 @@ export	default	{
 		play(value){
 			if(value){
 			this.sing=value;
-			}
+			}			
 			this.$refs.playsongs.singplay();
+		},
+		playDetail(){
+			this.$refs.detailtime.playDetail();
 		},
 		selectshow(){
 			$(".select").prop("checked",false);	
@@ -140,22 +155,20 @@ export	default	{
 		},
 		addlist(){
 			var	ready	=	this;
-			var	songlist=$('.select');
-			$.each(songlist,function(){
-						if(ready.singlist.indexOf(this.value)	<	0){
-							ready.singlist.push(this.value);
-						}
+			ready.singlist=[];
+			$.each(this.song,function(index,item){
+				ready.singlist.push(item.id)
 			});
-			this.change.push(1);
+			this.listsong=this.song;
 			this.showselect	=false;
 		},
 		download(){
 			var	ready	=	this;
 			var	songlist=$('.select');
-			$.each(songlist,function(){
-					if(this.checked){
-						if(ready.singlist.indexOf(this.value)	<	0){
-							ready.singlist.push(this.value);
+			$.each(songlist,function(index,item){
+					if(item.checked){
+						if(ready.singlist.indexOf(item.defaultValue)==-1){
+							ready.singlist.push(item.defaultValue);
 						}
 					}
 			});
@@ -164,23 +177,28 @@ export	default	{
 		}
 	},
 	created(){
-		var	ready	=	this;
-		$.ajax({
-		type:	"get",
-		async:	false,
-		url:	"http://music.qq.com/musicbox/shop/v3/data/hit/hit_all.js",
-		dataType:	"jsonp",
-		jsonp:	"callback",
-		jsonpCallback:	"JsonCallback",	
-		scriptCharset:	'gbk',
-		success:	function(data)	{
-			ready.song=$.parseJSON(JSON.stringify(data)).songlist;
-			ready.sing=ready.song[0];
-		},
-		error:	function()	{
-			alert('获取api失败');
-		}
-	});
+		//var	ready	=	this;
+		//$.ajax({
+		//	type:	"get",
+		//	async:	false,
+		//	url:	"http://music.qq.com/musicbox/shop/v3/data/hit/hit_all.js",
+		//	dataType:	"jsonp",
+		//	jsonp:	"callback",
+		//	jsonpCallback:	"JsonCallback",	
+		//	scriptCharset:	'gbk',
+		//	success:	function(data)	{
+		//		ready.song=$.parseJSON(JSON.stringify(data)).songlist;
+		//		ready.sing=ready.song[0];
+		//		console.log(data);
+		//	},
+		//	error:	function()	{
+		//		alert('获取api失败');
+		//	}
+		//});
+		var datalist = getSongList();
+		this.song=datalist;
+		this.sing=this.song[0];
+		console.log(this.sing);
 		this.$nextTick(()=>{
 			this.scroll	=	new	BScroll(this.$refs.singsong,{
 								click:true
@@ -195,7 +213,7 @@ export	default	{
 	watch:{
 		change(){
 			this.song.forEach(item=>{
-				if(this.singlist.indexOf(item.id) > 0){
+				if(this.singlist.indexOf(item.id)> -1){
 					this.listsong.push(item);
 				}
 			});

@@ -21,7 +21,10 @@
    			<div class="speed">
 				<div class="startime">{{changetime(this.currenttime)}}</div>
 	   			<div class="speed-item">
-	   				<div class="progress"></div>
+	   				<div class="progress">
+						<div class="animation"></div>
+					</div>
+					<div class="anima"></div>
 	   			</div>
 	   			<div class="endtime" >{{changetime(sing.playtime)}}</div>
    			</div>
@@ -49,12 +52,11 @@ export default {
 	},
 	data(){
 		return {
-			song:this.sing,
+			song:null,
 			showplay:false,
-			currenttime:this.sing.currentTime,
+			currenttime:0,
 			fun:null,
-			timer:null,
-			code:0
+			timer:null
 			
 		}
 	},
@@ -62,19 +64,19 @@ export default {
 		slice(){
 			this.$emit("showdetails",this.song);
 		},
-		playDetail(){
-			this.play()
-		},
 		play(){
 			this.showplay=!this.showplay;
+			let animation = document.querySelector(".animation");
+			//let anima = document.querySelector(".anima");
 			if(this.showplay){
+				animation.style.animationPlayState="paused";
+				//anima.style.animationPlayState="paused";
 				clearInterval(this.timer);
-				this.timer="";
 			}
 			else{
-				if(!this.timer){
-					this.timer=setInterval(this.fun,1000);
-				}
+				animation.style.animationPlayState="running";
+				//anima.style.animationPlayState="running";
+				this.timer=setInterval(this.fun,1000);
 			}
 			this.$emit("playd");
 		},
@@ -90,10 +92,7 @@ export default {
 			return tmptime;
 		},
 		playupper(){
-			var length=this.listsong.length;			
-			if(length<=1){
-				return;
-			}
+			var length=this.listsong.length;
 			this.cleartime();
 			for(let i=0;i<length;i++){
 				if(this.song.id===this.listsong[i].id){
@@ -107,22 +106,22 @@ export default {
 				}
 			}
 		},
-		cleartime(time=0,sing={}){
+		animate(){
+			let animation = document.querySelector(".animation");
+			//let anima = document.querySelector(".anima");
+			let progress = document.querySelector(".progress");
+			animation.style.marginLeft="0px";
+			//anima.style.marginLeft="0px";
+			animation.style.animationDuration=this.sing.playtime+'s';
+			//anima.style.animationDuration=this.sing.playtime+'s';
+		},
+		cleartime(){
 			clearInterval(this.timer);
-			this.timer="";
-			this.currenttime=time;
-			if(!this.showplay){
-				this.timer=setInterval(this.fun,1000);
-				return;
-			}
-			this.play();
-			//this.timer=setInterval(this.fun,1000);
+			this.currenttime=0;
+			this.timer=setInterval(this.fun,1000);
 		},
 		playnext(){
-			var length=this.listsong.length||0;
-			if(length<=1){
-				return;
-			}
+			var length=this.listsong.length;
 			this.cleartime();
 			for(let i=0;i<length;i++){
 				if(this.song.id===this.listsong[i].id){
@@ -131,8 +130,6 @@ export default {
 					}else{
 						this.song=this.listsong[i+1];
 					}
-					console.log(this.song);
-					console.log(this.listsong);
 					this.$emit("playd",this.song);
 					return;
 				}
@@ -143,31 +140,18 @@ export default {
 		let ready = this;
 		let nonetime=0;
 		this.fun = function (){
-			try{
-				ready.currenttime +=1;
-				let progress = document.querySelector(".progress");
-				progress.style.width=Math.floor(ready.currenttime/ready.sing.playtime*100)+'%';			
-				if(ready.currenttime >ready.song.playtime){
-					ready.currenttime =nonetime;
-					var length=ready.listsong.length||0;
-					if(length<=1){
-						ready.playDetail()
-						progress.style.width='0%';
-					}
-					ready.playnext();
-				}
-				this.timer=setInterval(this.fun,1000);
-			}catch(err){				
-				//console.log(err);
+			ready.currenttime +=1;
+			if(ready.currenttime >ready.song.playtime){
+				ready.currenttime =nonetime;
+				ready.playnext();
 			}
 		}
+		this.timer=setInterval(this.fun,1000);
 	},
 	watch:{
-		sing(){	
-			console.log(this.sing);		
+		sing(){
+			this.animate();
 			this.song=this.sing;
-			document.querySelector(".progress").style.width=0;
-			//this.timer=setInterval(this.fun,1000);
 		}
 	}
 }
@@ -272,17 +256,37 @@ export default {
 					color:orange
 					font-size:48px
 				.speed-item
-					width:65%
+					width:80%
 					position:relative
-					border:1px solid gray
-					left:130px
-					top:-3px
-					height:10px
 					.progress
-						position:relative
-						height:10px
+						height:5px
 						background:#33ff99
-						width:0
+						margin:50px 0 0 100px
+						overflow:visible
+					   .animation
+							height:5px
+							background: #272727
+							position:relative
+							animation:move infinite
+							animation-timing-function:linear
+							margin-top:50px
+					.anima
+						display:block
+						position:absolute
+						left:100px
+						top:-5px
+						animation:animatepositive  infinite
+						animation-timing-function:linear
+						background:#33ff99
+						width:15px
+						height:15px
+						border-radius:50%
+					@keyframes animatepositive
+						from {margin-left: 0}
+						to {margin-left: 85%}
+					@keyframes move
+						from {margin-left: 0}
+						to {margin-left: 95%}
 			.singcart
 				position:relative
 				top:9%

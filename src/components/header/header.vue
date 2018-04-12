@@ -4,7 +4,7 @@
 	<div class="title">{{this.title}}</div>
 	<div class="item-wrapper">
 		<span class="icon"><img src="./head.png" width=100 height=100></span>
-		<span class="person-id">{{this.id}}</span>
+		<span class="person-id">{{this.user.username}}</span>
 	</div>
 	<div class="background">
 		<img src="./header.png" width="100%" height="100%" >
@@ -14,11 +14,19 @@
    </div>
 </template>
 <script type="text/ecmascript-6">
+import {getUser} from "../../common/js/comment.js"
 export default {
+  props:{
+  	user:{
+  		type:Object
+  	}
+  },
   data(){
   	return {
+  	//user:(()=>{
+    //    	return getUser();
+    //  	})(),
   	title:"落凡音乐",
-  	id:"落凡"
   }
   },
   methods:{

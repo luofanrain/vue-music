@@ -8,8 +8,8 @@
    			<div class="singName">{{sing.songName}}</div>
    			<div class="auther">{{sing.singerName}}</div>
    		</div>
-   		<div class="play icon-playon" @click="singplay" v-show="!playshow"></div>
-   		<div class="play icon-stop-a" @click="singplay"  v-show="playshow"></div>
+   		<div class="play icon-playon" @click="playsing" v-show="!playshow"></div>
+   		<div class="play icon-stop-a" @click="playsing"  v-show="playshow"></div>
    		  <video class="music" style="width:0;height:0" autoplay="autoplay">
 		    <source :src="singurl" type="video/mp4">
 		  </video>
@@ -34,22 +34,31 @@ export default {
   	singplay(){
   		var mymusic=document.querySelector('.music');
   		if (mymusic.paused) 
-		  {mymusic.play(); 
-		   this.playshow=true;
+		{
+			mymusic.play();
+		    this.playshow=true;
 		}
 		else {
-		  mymusic.pause(); 
-		  this.playshow=false;
+		 	mymusic.pause(); 
+			this.playshow=false;
 		}
+  	},  	
+	playsing(){
+		//this.singplay();
+		this.$emit("playDetail");
+	},
+  	getCurrentTime(){
+  		return document.querySelector('.music').currentTime;
   	}
   },
   watch:{
   	sing(){
   		var mymusic=document.querySelector('.music');
   		mymusic.load();
-  		let start ="http://ws.stream.qqmusic.qq.com/";
-  		let end = ".m4a?fromtag=46";
-  		this.singurl=start+this.sing.id+end;
+  		//let start ="http://ws.stream.qqmusic.qq.com/";
+  		//let end = ".m4a?fromtag=46";
+  		//this.singurl=start+this.sing.id+end;
+  		this.singurl=this.sing.playUrl;
   		this.playshow=true;
   	}
   }

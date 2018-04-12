@@ -5,11 +5,11 @@
 	  			<li class="comment-hot" v-for=" (item,index,value) in commentlist" >
 	  				<div class="title-icon icon-contact"></div>
 	  				<div class="comment-item">
-	  					<div class="user">{{index}}</div>
-	  					<div class="date">{{item.time}}</div>
-	  					<div class="text"><i class="icon-hot hot" v-show="value <3"></i>{{item.content}}</div>
+	  					<div class="user">{{item.username}}</div>
+	  					<div class="date">{{item.createTime}}</div>
+	  					<div class="text"><i class="icon-hot hot" v-show="value <3"></i>{{item.ratting}}</div>
 	  				</div>
-	  				<div class="icon ding icon-fabulous" :class="{'active':showcolor}" @click="addding($event,index)"><span class="number">{{item.ding}}</span></div>
+	  				<div class="icon ding icon-fabulous" :class="{'active':item.status}" @click="addding($event,item.id,index,item.status)"><span class="number">{{item.praise}}</span></div>
 	  			</li>
 	  		</ul>
   		</div>
@@ -25,60 +25,78 @@
 import BScroll from "better-scroll"
 import {loadcomment} from "../../common/js/comment.js"
 import {savecomment} from "../../common/js/comment.js"
+import {changePraise} from "../../common/js/comment.js"
+import {getUser} from "../../common/js/comment.js"
 import $ from "jquery"
 const name=Math.floor(Math.random()*100000);
 export default {
   props:{
   	food:{
   		type:Object
+  	},
+  	user:{
+  		type:Object
   	}
   },
   data(){
   	return {
-  		content:(()=>{
-  			return loadcomment();
-  		})(),
   		showcolor:false,
   		listcomment:null,
-  		text:""
+  		text:"",
+      	//user:(()=>{
+        //	return getUser();
+      	//})(),
+      	content:[]
+  		//content:(()=>{
+  			//return loadcomment(this.user.username);
+  		//	console.log(this.showcolor);
+  		//	return loadcomment('游客79691180');
+  		//})()
   	}
   },
   computed:{
   		commentlist(){
-  			let list = JSON.parse(this.content);
-  			$.each(list,function(index,value){
-  				list[index]={};
-  				list[index]=eval("("+value+")");
-  			});
-  			console.log(list);
+  			this.content=loadcomment(this.user.username);
+  			let list = this.content;
   			this.listcomment=list;
+  			//console.log(list);
+  			//console.log(this.content);
   			return list;
   		}
   },
   methods:{
-  	addding(e,value){
-  		//this.showcolor=!this.showcolor;
+  	addding(e,id,value,status){
   		let li = e.currentTarget;
-  		if(li.style.color=="red")
-  		{
+  		console.log(e,id,value);
+  		let tmp = {};
+  		tmp.user_id = this.user.id;
+  		tmp.ratting_id = id;
+  		console.log(li.style.color);
+  		console.log(11)
+  		if(status== 1)
+  		{	this.commentlist[value]['status']=0;
   			li.style.color="#8a8a8a";
-  			this.listcomment[value]['ding']-=1;
+  			this.listcomment[value]['praise'] -=1;
+  			tmp.status = 1;
   		}else{
-  			li.style.color='red';
-  			this.listcomment[value]['ding']+=1;
+  			this.commentlist[value]['status']=1;
+  			li.style.color='red';  		
+  			this.listcomment[value]['praise'] =parseInt(this.listcomment[value]['praise'])+1;
+  			tmp.status=0;
 		}
-		let tmp = JSON.stringify(this.listcomment[value]);
-		savecomment(tmp,value);
+		//let tmp = JSON.stringify(this.listcomment[value]);
+		changePraise(tmp);
   	},
   	addcomment(){
 
-  		let today=new Date();
-  		let time = today.getFullYear()+"-"+today.getMonth()+"-"+today.getDate();
+  		let tmp = {};
   		let ding=0;
-  		let str = "{"+"'time':'"+time+"','content':'"+this.text+"','ding':"+ding+"}";
-  		savecomment(str,name);
+  		tmp.username = this.user.username;
+  		tmp.ratting =  this.text;
+  		savecomment(tmp);
+  		this.commentlist.push(tmp);
   		this.text="";
-  		console.log(this.content);
+  		//console.log(this.content);
   	}
   },
   mounted(){
@@ -91,15 +109,6 @@ export default {
 		   this.listscroll.refresh();
 		}
 	});
-	savecomment("{'time':'2017-12-18','content':'落凡音乐，良心商家，不打广告，不骗玩家，歌曲种类齐全，是我们居家必备歌库，顶一个','ding':0}","php");
-	savecomment("{'time':'2017-12-18','content':'落凡音乐，良心商家，不打广告，不骗玩家，歌曲种类齐全，是我们居家必备歌库，顶一个','ding':0}","luofan");
-	savecomment("{'time':'2017-12-18','content':'落凡音乐，良心商家，不打广告，不骗玩家，歌曲种类齐全，是我们居家必备歌库，顶一个','ding':0}","xinyue");
-	savecomment("{'time':'2017-12-18','content':'落凡音乐，良心商家，不打广告，不骗玩家，歌曲种类齐全，是我们居家必备歌库，顶一个','ding':0}","joker");
-	savecomment("{'time':'2017-12-18','content':'落凡音乐，良心商家，不打广告，不骗玩家，歌曲种类齐全，是我们居家必备歌库，顶一个','ding':0}","luochuanyuewu");
-	savecomment("{'time':'2017-12-18','content':'落凡音乐，良心商家，不打广告，不骗玩家，歌曲种类齐全，是我们居家必备歌库，顶一个','ding':0}","jiushini");
-	savecomment("{'time':'2017-12-18','content':'落凡音乐，良心商家，不打广告，不骗玩家，歌曲种类齐全，是我们居家必备歌库，顶一个','ding':0}","我喜欢你");
-	savecomment("{'time':'2017-12-18','content':'落凡音乐，良心商家，不打广告，不骗玩家，歌曲种类齐全，是我们居家必备歌库，顶一个','ding':0}","爱你一万年");
-	savecomment("{'time':'2017-12-18','content':'落凡音乐，良心商家，不打广告，不骗玩家，歌曲种类齐全，是我们居家必备歌库，顶一个','ding':0}","时间无限");
   }
 };
 </script>

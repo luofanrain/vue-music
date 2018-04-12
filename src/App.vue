@@ -1,19 +1,21 @@
 <template>
   <div id="app" >
-    <v-header></v-header>
+    <v-header :user="user"></v-header>
+
     <div class="nav-wrapper">
       <div class="nav-item"   @click="select(0)" :class="{'active':selectactive === 0}"><router-link to="/count">{{this.count}}</router-link></div>
       <div class="nav-item"   @click="select(1)" :class="{'active':selectactive === 1}"><router-link to="/comment">{{this.purpular}}</router-link></div>
       <div class="nav-item"   @click="select(2)" :class="{'active':selectactive === 2}"><router-link to="/person">{{this.person}}</router-link></div>
-    </div>
+    </div>    
     <keep-alive>
-    <router-view :change="change"></router-view>
+      <router-view :change="change" :user="user" keep-alive></router-view>
     </keep-alive>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 import header from './components/header/header.vue'
+import {getUser} from "./common/js/comment.js"
 export default {
   data(){
     return {
@@ -22,8 +24,12 @@ export default {
       purpular:"评论",
       person:'个人',
       change:[],
-      selectactive:0
+      selectactive:0,
+      user:(()=>{
+        return getUser();
+      })(),
     }
+
   },
   methods:{
     select(type){
